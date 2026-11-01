@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ProcessHub: plataforma web para automatizar cotizaciones, facturación y control de ganancias.">
+  <title>DTB | DOCUMENTATION TAX BUSSINES
+  </title>
+
+  <!-- Framework: Bootstrap 5 (CSS) + iconos -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= BARRA LATERAL (offcanvas en móvil) ================= -->
+  <aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Menú principal">
+    <div class="sidebar-inner">
+      <div class="brand">
+        <span class="brand-logo"><i class="bi bi-lightning-charge-fill"></i></span>
+        <span>DTB</span>
+        <button type="button" class="btn-close btn-close-white ms-auto d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Cerrar"></button>
+      </div>
+
+      <nav class="nav flex-column" id="mainNav">
+        <span class="nav-section">General</span>
+        <a class="nav-link" href="#dashboard" data-view="dashboard"><i class="bi bi-graph-up-arrow"></i> Dashboard</a>
+        <span class="nav-section">Documentos</span>
+        <a class="nav-link" href="#cotizaciones" data-view="cotizaciones"><i class="bi bi-file-earmark-text"></i> Cotizaciones</a>
+        <a class="nav-link" href="#facturas" data-view="facturas"><i class="bi bi-receipt"></i> Facturación</a>
+        <span class="nav-section">Maestros</span>
+        <a class="nav-link" href="#clientes" data-view="clientes"><i class="bi bi-people"></i> Clientes</a>
+        <a class="nav-link" href="#productos" data-view="productos"><i class="bi bi-box-seam"></i> Productos y servicios</a>
+        <a class="nav-link" href="#gastos" data-view="gastos"><i class="bi bi-wallet2"></i> Gastos</a>
+        <span class="nav-section">Procesos</span>
+        <a class="nav-link" href="#automatizaciones" data-view="automatizaciones"><i class="bi bi-robot"></i> Automatizaciones</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-sm btn-outline-light w-100" id="btnReset"><i class="bi bi-arrow-counterclockwise"></i> Restablecer datos demo</button>
+        <small>Datos guardados en este navegador</small>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= CONTENIDO PRINCIPAL ================= -->
+  <main class="main">
+    <header class="topbar">
+      <button class="btn btn-light d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+      </button>
+      <div>
+        <h1 id="viewTitle" class="h4 mb-0">Dashboard</h1>
+        <small class="text-secondary" id="todayLabel"></small>
+      </div>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <div class="dropdown">
+          <button class="btn btn-light position-relative" data-bs-toggle="dropdown" aria-label="Alertas">
+            <i class="bi bi-bell"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="alertCount">0</span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end alerts-menu" id="alertMenu"></div>
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-plus-lg"></i><span class="d-none d-sm-inline"> Crear</span></button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><button class="dropdown-item" data-new="cot"><i class="bi bi-file-earmark-text me-2"></i>Cotización</button></li>
+            <li><button class="dropdown-item" data-new="fac"><i class="bi bi-receipt me-2"></i>Factura</button></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><button class="dropdown-item" data-new="cliente"><i class="bi bi-person-plus me-2"></i>Cliente</button></li>
+            <li><button class="dropdown-item" data-new="gasto"><i class="bi bi-wallet2 me-2"></i>Gasto</button></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section id="view-dashboard" class="view">
+        <div class="row g-3 mb-3" id="kpis"></div>
+        <div class="row g-3">
+          <div class="col-xl-8">
+            <div class="card panel h-100">
+              <div class="card-header">Ventas, gastos y ganancia (últimos 6 meses)</div>
+              <div class="card-body"><div class="chart-box"><canvas id="chartFlujo"></canvas></div></div>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="card panel h-100">
+              <div class="card-header">Gastos por categoría</div>
+              <div class="card-body"><div class="chart-box"><canvas id="chartGastos"></canvas></div></div>
+            </div>
+          </div>
+          <div class="col-xl-7">
+            <div class="card panel h-100">
+              <div class="card-header">Documentos recientes</div>
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead><tr><th>Documento</th><th>Cliente</th><th>Fecha</th><th class="text-end">Total</th><th>Estado</th></tr></thead>
+                  <tbody id="tablaRecientes"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-5">
+            <div class="card panel h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                Actividad automatizada <a href="#automatizaciones" class="small">Ver reglas</a>
+              </div>
+              <ul class="list-group list-group-flush activity" id="logAuto"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== COTIZACIONES ===== -->
+      <section id="view-cotizaciones" class="view d-none">
+        <div class="toolbar">
+          <input type="search" class="form-control table-search" data-table="tablaCotizaciones" placeholder="Buscar por número o cliente…">
+          <select class="form-select estado-filter" data-table="tablaCotizaciones">
+            <option value="">Todos los estados</option>
+            <option>Borrador</option><option>Enviada</option><option>Aprobada</option><option>Rechazada</option><option>Expirada</option>
+          </select>
+          <button class="btn btn-primary ms-auto" data-new="cot"><i class="bi bi-plus-lg"></i> Nueva cotización</button>
+        </div>
+        <div class="card panel">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead><tr><th>N°</th><th>Cliente</th><th>Fecha</th><th>Válida hasta</th><th class="text-end">Total</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+              <tbody id="tablaCotizaciones"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FACTURAS ===== -->
+      <section id="view-facturas" class="view d-none">
+        <div class="toolbar">
+          <input type="search" class="form-control table-search" data-table="tablaFacturas" placeholder="Buscar por número o cliente…">
+          <select class="form-select estado-filter" data-table="tablaFacturas">
+            <option value="">Todos los estados</option>
+            <option>Pendiente</option><option>Pagada</option><option>Vencida</option><option>Anulada</option>
+          </select>
+          <button class="btn btn-outline-secondary ms-auto" id="btnCsv"><i class="bi bi-filetype-csv"></i> Exportar CSV</button>
+          <button class="btn btn-primary" data-new="fac"><i class="bi bi-plus-lg"></i> Nueva factura</button>
+        </div>
+        <div class="card panel">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead><tr><th>N°</th><th>Cliente</th><th>Emisión</th><th>Vence</th><th class="text-end">Total</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+              <tbody id="tablaFacturas"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CLIENTES ===== -->
+      <section id="view-clientes" class="view d-none">
+        <div class="toolbar">
+          <input type="search" class="form-control table-search" data-table="tablaClientes" placeholder="Buscar cliente o RUC…">
+          <button class="btn btn-primary ms-auto" data-new="cliente"><i class="bi bi-person-plus"></i> Nuevo cliente</button>
+        </div>
+        <div class="card panel">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead><tr><th>Razón social</th><th>RUC</th><th>Correo</th><th>Teléfono</th><th class="text-end">Facturado</th><th class="text-end">Acciones</th></tr></thead>
+              <tbody id="tablaClientes"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PRODUCTOS ===== -->
+      <section id="view-productos" class="view d-none">
+        <div class="toolbar">
+          <input type="search" class="form-control table-search" data-table="tablaProductos" placeholder="Buscar producto o servicio…">
+          <button class="btn btn-primary ms-auto" data-new="producto"><i class="bi bi-plus-lg"></i> Nuevo ítem</button>
+        </div>
+        <div class="card panel">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead><tr><th>Nombre</th><th>Tipo</th><th>Unidad</th><th class="text-end">Precio (sin IGV)</th><th class="text-end">Acciones</th></tr></thead>
+              <tbody id="tablaProductos"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== GASTOS ===== -->
+      <section id="view-gastos" class="view d-none">
+        <div class="toolbar">
+          <input type="search" class="form-control table-search" data-table="tablaGastos" placeholder="Buscar gasto…">
+          <button class="btn btn-primary ms-auto" data-new="gasto"><i class="bi bi-plus-lg"></i> Registrar gasto</button>
+        </div>
+        <div class="card panel">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead><tr><th>Fecha</th><th>Categoría</th><th>Descripción</th><th class="text-end">Monto</th><th class="text-end">Acciones</th></tr></thead>
+              <tbody id="tablaGastos"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== AUTOMATIZACIONES ===== -->
+      <section id="view-automatizaciones" class="view d-none">
+        <div class="toolbar">
+          <p class="text-secondary mb-0">Reglas que se ejecutan al iniciar la plataforma y después de cada cambio en los documentos.</p>
+          <button class="btn btn-primary ms-auto" id="btnRunAuto"><i class="bi bi-play-fill"></i> Ejecutar ahora</button>
+        </div>
+        <div class="row g-3" id="listaReglas"></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ================= MODALES ================= -->
+
+<!-- Cotización / Factura -->
+<div class="modal fade" id="modalDoc" tabindex="-1" aria-labelledby="docTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <form class="modal-content needs-validation" id="formDoc" novalidate>
+      <div class="modal-header">
+        <h2 class="modal-title h5" id="docTitle">Nueva cotización</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="docTipo"><input type="hidden" id="docId">
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="docCliente">Cliente</label>
+            <select class="form-select" id="docCliente" required></select>
+            <div class="invalid-feedback">Seleccione un cliente.</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label" for="docFecha">Fecha de emisión</label>
+            <input type="date" class="form-control" id="docFecha" required>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label" for="docVence" id="docVenceLabel">Válida hasta</label>
+            <input type="date" class="form-control" id="docVence" required>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table items-table align-middle">
+            <thead><tr><th style="min-width:220px">Descripción</th><th style="width:110px">Cant.</th><th style="width:150px">P. unit. (S/)</th><th class="text-end" style="width:130px">Importe</th><th style="width:48px"></th></tr></thead>
+            <tbody id="docItems"></tbody>
+          </table>
+        </div>
+        <datalist id="dlProductos"></datalist>
+        <button type="button" class="btn btn-sm btn-outline-primary" id="btnAddItem"><i class="bi bi-plus"></i> Agregar línea</button>
+
+        <div class="row g-3 mt-2">
+          <div class="col-md-7">
+            <label class="form-label" for="docNotas">Notas / condiciones</label>
+            <textarea class="form-control" id="docNotas" rows="3" placeholder="Ej.: Forma de pago 50% adelanto, 50% contra entrega."></textarea>
+          </div>
+          <div class="col-md-5">
+            <div class="totals">
+              <div><span>Subtotal</span><strong id="tSub">S/ 0.00</strong></div>
+              <div><span>IGV (18%)</span><strong id="tIgv">S/ 0.00</strong></div>
+              <div class="grand"><span>Total</span><strong id="tTotal">S/ 0.00</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Cliente -->
+<div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content needs-validation" id="formCliente" novalidate>
+      <div class="modal-header"><h2 class="modal-title h5">Cliente</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="cliId">
+        <div class="mb-3"><label class="form-label" for="cliNombre">Razón social / nombre</label><input class="form-control" id="cliNombre" required></div>
+        <div class="mb-3"><label class="form-label" for="cliRuc">RUC</label><input class="form-control" id="cliRuc" required pattern="(10|15|17|20)[0-9]{9}" inputmode="numeric" maxlength="11"><div class="invalid-feedback">El RUC debe tener 11 dígitos y empezar con 10, 15, 17 o 20.</div></div>
+        <div class="row g-3">
+          <div class="col-sm-7"><label class="form-label" for="cliEmail">Correo</label><input type="email" class="form-control" id="cliEmail" required><div class="invalid-feedback">Correo no válido.</div></div>
+          <div class="col-sm-5"><label class="form-label" for="cliTel">Teléfono</label><input class="form-control" id="cliTel"></div>
+        </div>
+        <div class="mt-3"><label class="form-label" for="cliDir">Dirección</label><input class="form-control" id="cliDir"></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary">Guardar</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Producto -->
+<div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content needs-validation" id="formProducto" novalidate>
+      <div class="modal-header"><h2 class="modal-title h5">Producto o servicio</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="proId">
+        <div class="mb-3"><label class="form-label" for="proNombre">Nombre</label><input class="form-control" id="proNombre" required></div>
+        <div class="row g-3">
+          <div class="col-sm-4"><label class="form-label" for="proTipo">Tipo</label><select class="form-select" id="proTipo"><option>Servicio</option><option>Producto</option></select></div>
+          <div class="col-sm-4"><label class="form-label" for="proUnidad">Unidad</label><input class="form-control" id="proUnidad" value="und" required></div>
+          <div class="col-sm-4"><label class="form-label" for="proPrecio">Precio (S/)</label><input type="number" class="form-control" id="proPrecio" min="0.01" step="0.01" required></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary">Guardar</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Gasto -->
+<div class="modal fade" id="modalGasto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content needs-validation" id="formGasto" novalidate>
+      <div class="modal-header"><h2 class="modal-title h5">Registrar gasto</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-sm-6"><label class="form-label" for="gasFecha">Fecha</label><input type="date" class="form-control" id="gasFecha" required></div>
+          <div class="col-sm-6"><label class="form-label" for="gasCat">Categoría</label>
+            <select class="form-select" id="gasCat"><option>Planilla</option><option>Alquiler</option><option>Servicios</option><option>Marketing</option><option>Software</option><option>Otros</option></select></div>
+          <div class="col-12"><label class="form-label" for="gasDesc">Descripción</label><input class="form-control" id="gasDesc" required></div>
+          <div class="col-sm-6"><label class="form-label" for="gasMonto">Monto (S/)</label><input type="number" class="form-control" id="gasMonto" min="0.01" step="0.01" required></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary">Guardar</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Vista previa / impresión -->
+<div class="modal fade" id="modalPreview" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header"><h2 class="modal-title h5">Vista previa del documento</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+      <div class="modal-body bg-body-tertiary"><div id="previewBody"></div></div>
+      <div class="modal-footer">
+        <button class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+        <button class="btn btn-primary" id="btnPrint"><i class="bi bi-printer"></i> Imprimir / Guardar PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastBox"></div>
+<div id="printArea"></div>
+
+<!--  JS  -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

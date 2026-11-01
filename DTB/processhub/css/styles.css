@@ -1,0 +1,196 @@
+/* =========================================================
+   ProcessHub — hoja de estilos propia
+   Se apoya en Bootstrap 5 y redefine sus variables para
+   aplicar la identidad visual del proyecto.
+   ========================================================= */
+
+:root {
+  --ph-primary: #0f8b7d;
+  --ph-primary-dark: #0b6e63;
+  --ph-sidebar: #0f1b2d;
+  --ph-sidebar-text: #a9b6c8;
+  --ph-bg: #f3f6f9;
+  --ph-card: #ffffff;
+  --ph-border: #e4e9f0;
+  --ph-text: #1d2939;
+  --ph-radius: 14px;
+  --bs-body-font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bs-body-color: var(--ph-text);
+  --bs-link-color-rgb: 15, 139, 125;
+}
+
+body { background: var(--ph-bg); }
+
+/* Botón primario con el color de marca */
+.btn-primary {
+  --bs-btn-bg: var(--ph-primary);
+  --bs-btn-border-color: var(--ph-primary);
+  --bs-btn-hover-bg: var(--ph-primary-dark);
+  --bs-btn-hover-border-color: var(--ph-primary-dark);
+  --bs-btn-active-bg: var(--ph-primary-dark);
+  --bs-btn-active-border-color: var(--ph-primary-dark);
+  --bs-btn-disabled-bg: var(--ph-primary);
+  --bs-btn-disabled-border-color: var(--ph-primary);
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--ph-primary);
+  --bs-btn-border-color: var(--ph-primary);
+  --bs-btn-hover-bg: var(--ph-primary);
+  --bs-btn-hover-border-color: var(--ph-primary);
+  --bs-btn-active-bg: var(--ph-primary-dark);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--ph-primary);
+  box-shadow: 0 0 0 .2rem rgba(15, 139, 125, .2);
+}
+
+/* ---------- Layout general ---------- */
+.app { display: flex; min-height: 100vh; }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.content { padding: 1.5rem; }
+
+/* ---------- Barra lateral ---------- */
+.sidebar { --bs-offcanvas-width: 270px; --bs-offcanvas-bg: var(--ph-sidebar); }
+.sidebar-inner {
+  background: var(--ph-sidebar);
+  color: var(--ph-sidebar-text);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1rem;
+}
+@media (min-width: 992px) {
+  .sidebar { width: 250px; flex-shrink: 0; }
+  .sidebar-inner { position: sticky; top: 0; height: 100vh; }
+}
+.brand {
+  display: flex; align-items: center; gap: .6rem;
+  color: #fff; font-weight: 700; font-size: 1.2rem;
+  margin-bottom: 1.5rem; padding: 0 .5rem;
+}
+.brand-logo {
+  display: grid; place-items: center;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, #18c3ae, var(--ph-primary));
+}
+.nav-section {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .08em;
+  color: #66768d; margin: 1rem .75rem .35rem;
+}
+.sidebar .nav-link {
+  color: var(--ph-sidebar-text);
+  border-radius: 10px;
+  padding: .55rem .75rem;
+  display: flex; align-items: center; gap: .65rem;
+  transition: background .15s, color .15s;
+}
+.sidebar .nav-link:hover { background: rgba(255,255,255,.06); color: #fff; }
+.sidebar .nav-link.active { background: var(--ph-primary); color: #fff; }
+.sidebar-footer { margin-top: auto; display: grid; gap: .4rem; text-align: center; }
+.sidebar-footer small { color: #66768d; }
+
+/* ---------- Barra superior ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 1020;
+  display: flex; align-items: center; gap: 1rem;
+  padding: .9rem 1.5rem;
+  background: rgba(243, 246, 249, .9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--ph-border);
+}
+.alerts-menu { width: 320px; max-height: 360px; overflow-y: auto; }
+.alerts-menu .dropdown-item { white-space: normal; font-size: .875rem; }
+
+/* ---------- Tarjetas y paneles ---------- */
+.panel {
+  border: 1px solid var(--ph-border);
+  border-radius: var(--ph-radius);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+  overflow: hidden;
+}
+.panel .card-header { background: transparent; font-weight: 600; padding: 1rem 1.25rem; }
+.panel .table th { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: #667085; font-weight: 600; }
+.panel .table td, .panel .table th { padding: .75rem 1rem; white-space: nowrap; }
+.chart-box { position: relative; height: 290px; }
+
+.kpi {
+  background: var(--ph-card);
+  border: 1px solid var(--ph-border);
+  border-radius: var(--ph-radius);
+  padding: 1.1rem 1.25rem;
+  height: 100%;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.kpi-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: grid; place-items: center; font-size: 1.25rem; flex-shrink: 0;
+}
+.kpi-label { color: #667085; font-size: .8rem; margin-bottom: .15rem; }
+.kpi-value { font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+.kpi-sub { font-size: .78rem; color: #667085; }
+
+/* ---------- Barra de herramientas de cada vista ---------- */
+.toolbar { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-bottom: 1rem; }
+.toolbar .table-search { max-width: 320px; }
+.toolbar .estado-filter { max-width: 200px; }
+
+/* ---------- Estados (badges) ---------- */
+.estado { font-weight: 600; font-size: .75rem; padding: .35em .7em; border-radius: 999px; }
+.estado-Borrador  { background: #eef2f6; color: #475467; }
+.estado-Enviada   { background: #e0edff; color: #1d4ed8; }
+.estado-Aprobada, .estado-Pagada { background: #dcfae6; color: #067647; }
+.estado-Rechazada, .estado-Vencida { background: #fee4e2; color: #b42318; }
+.estado-Expirada, .estado-Anulada { background: #f2f4f7; color: #98a2b3; text-decoration: line-through; }
+.estado-Pendiente { background: #fef0c7; color: #b54708; }
+
+.actions .btn { padding: .25rem .5rem; }
+
+/* ---------- Registro de actividad ---------- */
+.activity { max-height: 330px; overflow-y: auto; }
+.activity .list-group-item { display: flex; gap: .75rem; font-size: .875rem; }
+.activity i { color: var(--ph-primary); }
+
+/* ---------- Reglas de automatización ---------- */
+.rule-card { background: var(--ph-card); border: 1px solid var(--ph-border); border-radius: var(--ph-radius); padding: 1.25rem; height: 100%; }
+.rule-card.off { opacity: .6; }
+.rule-icon { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: #e6f6f4; color: var(--ph-primary); font-size: 1.2rem; }
+.form-switch .form-check-input:checked { background-color: var(--ph-primary); border-color: var(--ph-primary); }
+
+/* ---------- Editor de documentos ---------- */
+.items-table td { padding: .35rem; }
+.totals { background: var(--ph-bg); border-radius: 12px; padding: 1rem 1.25rem; }
+.totals div { display: flex; justify-content: space-between; padding: .25rem 0; }
+.totals .grand { border-top: 1px solid var(--ph-border); margin-top: .35rem; padding-top: .6rem; font-size: 1.15rem; }
+
+/* ---------- Documento imprimible ---------- */
+.doc-sheet { background: #fff; padding: 2rem; border-radius: 8px; font-size: .9rem; color: #111; }
+.doc-head { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 3px solid var(--ph-primary); padding-bottom: 1rem; margin-bottom: 1rem; }
+.doc-box { border: 2px solid var(--ph-primary); border-radius: 8px; padding: .75rem 1rem; text-align: center; min-width: 200px; }
+.doc-box .tipo { font-weight: 700; color: var(--ph-primary); }
+.doc-sheet table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+.doc-sheet th { background: var(--ph-sidebar); color: #fff; padding: .5rem; text-align: left; font-weight: 600; }
+.doc-sheet td { padding: .5rem; border-bottom: 1px solid #e5e7eb; }
+.doc-sheet .num { text-align: right; }
+.doc-totals { margin-left: auto; width: 260px; }
+.doc-totals div { display: flex; justify-content: space-between; padding: .2rem 0; }
+.doc-totals .grand { font-weight: 700; font-size: 1.05rem; border-top: 2px solid #111; margin-top: .3rem; padding-top: .4rem; }
+
+#printArea { display: none; }
+
+@media print {
+  body { background: #fff; }
+  body > *:not(#printArea) { display: none !important; }
+  #printArea { display: block; }
+  .doc-sheet { padding: 0; }
+  .doc-sheet th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* ---------- Ajustes responsivos ---------- */
+@media (max-width: 575.98px) {
+  .content { padding: 1rem; }
+  .topbar { padding: .75rem 1rem; }
+  .toolbar .table-search, .toolbar .estado-filter { max-width: none; flex: 1 1 100%; }
+  .doc-head { flex-direction: column; }
+  .doc-sheet { padding: 1rem; }
+}
